@@ -4,10 +4,10 @@ class Dataset(object):
 
     def get_output(self, x):
         if x[0] == 0:
-            z = [x[1], x[1]^x[2]]
+            z = [x[1], x[1] ^ x[2]]
         else:
-            z = [x[2], x[2]^x[1]]
-        y = [z[1], z[0]^z[1]]
+            z = [x[2], x[2] ^ x[1]]
+        y = [z[1], z[0] ^ z[1]]
         return y
 
     def get_samples(self):
@@ -21,7 +21,7 @@ class Dataset(object):
         test_x = [
             [0, 1, 0],
             [1, 0, 1]]
-        
+
         train_y = [self.get_output(x) for x in train_x]
         test_y = [self.get_output(x) for x in test_x]
         return [train_x, train_y], [test_x, test_y]
@@ -33,8 +33,7 @@ class Dataset(object):
         return self.test_samples
 
 
-
-if __name__ == '__main__':
+def main():
     d = Dataset()
     tr = d.get_train_samples()
     for x, y in zip(*tr):
@@ -44,3 +43,6 @@ if __name__ == '__main__':
     for x, y in zip(*ts):
         print(x, y)
 
+
+if __name__ == '__main__':
+    main()
