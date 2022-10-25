@@ -3,6 +3,7 @@ import argparse
 import random
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import os
 
 from dataset import Dataset
 from models import get_model_generator
@@ -52,7 +53,9 @@ def main(args):
         x, y = np.transpose(hidden)
         plt.scatter(x, y, marker=marker)
         print(hidden)
-    plt.savefig('logs/' + args.model + '/hidden_representations.pdf')
+    log_dir = os.path.join("logs", args.model, str(args.parameter_random_seed),
+                           "hidden_representations.pdf")
+    plt.savefig(log_dir)
 
 
 if __name__ == '__main__':
