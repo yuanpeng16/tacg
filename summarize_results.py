@@ -30,8 +30,8 @@ def get_result(model, name):
 def main():
     models = ['baseline', 'proposed', 'no_regularization', 'no_encoder',
               'no_decoder']
-    names = ['Baseline', 'Proposed', 'No regularization', 'No encoder',
-             'No decoder']
+    names = ['Baseline', 'Proposed', 'No regularization', 'No encoder design',
+             'No decoder design']
     for model, name in zip(models, names):
         get_result(model, name)
 
