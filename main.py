@@ -26,8 +26,33 @@ def train(args, dg, model, ev):
         print((i + 1) * args.log_interval, *ev.evaluate_all())
 
 
+def dump_hidden_representation(sorted_list, log_dir):
+    with open(os.path.join(log_dir, "hidden.txt"), 'w') as f:
+        for pair in sorted_list:
+            for hidden in pair:
+                f.write(str(tuple(hidden)) + '\n')
+            f.write("\n")
+
+
+def get_hidden_representations(ev, log_dir):
+    tr, ts = ev.get_hidden_representations()
+    sorted_list = [[tr[0], tr[3]], [tr[1], tr[4]], [tr[2], tr[5]], ts]
+    sorted_list = np.asarray(sorted_list)
+    markers = ['s', 's', '^', '^']
+    colors = ['none', 'black', 'black', 'none']
+    for hidden, marker, color in zip(sorted_list, markers, colors):
+        assert len(hidden.shape) == 2
+        assert hidden.shape[1] == 2
+        x, y = np.transpose(hidden)
+        plt.scatter(x, y, marker=marker, color=color, edgecolors='black')
+    plt.savefig(os.path.join(log_dir, "hidden_representations.pdf"))
+    dump_hidden_representation(sorted_list, log_dir)
+
+
 def main(args):
     set_random_seeds(args.data_random_seed, args.parameter_random_seed)
+    log_dir = os.path.join("logs", args.model, str(args.parameter_random_seed))
+
     dg = Dataset()
     train_samples = dg.get_train_samples(6)
     test_samples = dg.get_test_samples()
@@ -35,7 +60,6 @@ def main(args):
 
     mg = get_model_generator(args)
     model, encoder = mg.get_model()
-    model.summary()
 
     ev = Evaluator(args, model, encoder, datasets)
 
@@ -45,17 +69,7 @@ def main(args):
     print("final", *ev.evaluate_all())
 
     # output hidden representations
-    hidden_representations = ev.get_hidden_representations()
-    markers = ['o', 'x']
-    for hidden, marker in zip(hidden_representations, markers):
-        assert len(hidden.shape) == 2
-        assert hidden.shape[1] == 2
-        x, y = np.transpose(hidden)
-        plt.scatter(x, y, marker=marker)
-        print(hidden)
-    log_dir = os.path.join("logs", args.model, str(args.parameter_random_seed),
-                           "hidden_representations.pdf")
-    plt.savefig(log_dir)
+    get_hidden_representations(ev, log_dir)
 
 
 if __name__ == '__main__':
