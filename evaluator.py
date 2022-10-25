@@ -1,10 +1,12 @@
+import numpy as np
 import tensorflow as tf
 
 
 class Evaluator(object):
-    def __init__(self, args, model, datasets):
+    def __init__(self, args, model, encoder, datasets):
         self.args = args
         self.model = model
+        self.encoder = encoder
         self.datasets = datasets
 
     def forward(self, x):
@@ -12,7 +14,7 @@ class Evaluator(object):
         size = self.args.batch_size
         for i in range(0, len(x), size):
             j = min(i + size, len(x))
-            y1, y2 = self.model(x[i:j])
+            y1, y2 = self.model(x[i:j], training=False)
             y1 = tf.argmax(y1, -1).numpy()
             y2 = tf.argmax(y2, -1).numpy()
             y1_hat.extend(y1)
@@ -54,3 +56,8 @@ class Evaluator(object):
 
     def evaluate_all(self):
         return self.evaluate_datasets(self.datasets)
+
+    def get_hidden_representations(self):
+        train = self.encoder(self.datasets[0][0], training=False).numpy()
+        test = self.encoder(self.datasets[1][0], training=False).numpy()
+        return train, test

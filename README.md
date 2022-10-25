@@ -2,3 +2,4 @@
 
 ## Experiments
     sh experiments/baseline.sh
+    sh experiments/proposed.sh

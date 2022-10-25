@@ -9,5 +9,5 @@ cp "${ABS_PATH}" "${LOG_DIR}"
 
 CUDA_VISIBLE_DEVICES= \
   python3 -u main.py \
-  --model baseline |
+  --model proposed |
   tee "${LOG_DIR}"/log.txt
