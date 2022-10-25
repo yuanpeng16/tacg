@@ -33,13 +33,15 @@ class Dataset(object):
         train_x = [
             [0, 0, 0],
             [0, 0, 1],
-            [0, 1, 1],
-            [1, 0, 0],
-            [1, 1, 0],
-            [1, 1, 1]]
-        test_x = [
             [0, 1, 0],
-            [1, 0, 1]]
+            [1, 0, 0],
+            [1, 0, 1],
+            [1, 1, 0],
+        ]
+        test_x = [
+            [0, 1, 1],
+            [1, 1, 1],
+        ]
 
         train_y = [self.get_output(x) for x in train_x]
         train_y = np.asarray(train_y)

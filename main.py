@@ -36,10 +36,10 @@ def dump_hidden_representation(sorted_list, log_dir):
 
 def get_hidden_representations(ev, log_dir):
     tr, ts = ev.get_hidden_representations()
-    sorted_list = [[tr[0], tr[3]], [tr[1], tr[4]], [tr[2], tr[5]], ts]
+    sorted_list = [[tr[0], tr[3]], [tr[1], tr[5]], [tr[2], tr[4]], ts]
     sorted_list = np.asarray(sorted_list)
     markers = ['s', 's', '^', '^']
-    colors = ['none', 'black', 'black', 'none']
+    colors = ['none', 'black', 'none', 'black']
     for hidden, marker, color in zip(sorted_list, markers, colors):
         assert len(hidden.shape) == 2
         assert hidden.shape[1] == 2
