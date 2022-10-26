@@ -98,14 +98,14 @@ class AbstractModelGenerator(object):
         return l
 
     def proposed_decoder(self, x):
-        l1, l2 = tf.split(x, [1, 1], -1)
+        l1, l2 = tf.split(x, 2, -1)
         b = self.ff(2, l1, 'softmax')
         c = self.ff(2, l2, 'softmax')
         b = tf.expand_dims(b, -1)
         c = tf.expand_dims(c, 1)
         s = tf.matmul(b, c)
         s = tf.keras.layers.Flatten()(s)
-        s = tf.split(s, [1, 1, 1, 1], -1)
+        s = tf.split(s, 4, -1)
         s[2], s[3] = s[3], s[2]
         y1 = tf.concat([s[0] + s[1], s[2] + s[3]], -1)
         y2 = tf.concat([s[0] + s[2], s[1] + s[3]], -1)
