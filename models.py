@@ -77,7 +77,7 @@ class AbstractModelGenerator(object):
 
     # proposed ---------------------------------------
     def get_a_hidden_node(self, x1, r):
-        A = self.ff(2, x1, 'softmax', depth=8)
+        A = self.ff(2, x1, 'softmax', depth=5)
         A = tf.expand_dims(A, 1)
         a = tf.matmul(A, r)
         a = tf.reshape(a, [-1, 1])
