@@ -101,9 +101,12 @@ class AbstractModelGenerator(object):
         l1, l2 = tf.split(x, [1, 1], -1)
         b = self.ff(2, l1, 'softmax')
         c = self.ff(2, l2, 'softmax')
-        b1, b2 = tf.split(b, [1, 1], -1)
-        c1, c2 = tf.split(c, [1, 1], -1)
-        s = [b1 * c1, b2 * c1, b2 * c2, b1 * c2]
+        b = tf.expand_dims(b, -1)
+        c = tf.expand_dims(c, 1)
+        s = tf.matmul(b, c)
+        s = tf.keras.layers.Flatten()(s)
+        s = tf.split(s, [1, 1, 1, 1], -1)
+        s[2], s[3] = s[3], s[2]
         y1 = tf.concat([s[0] + s[1], s[2] + s[3]], -1)
         y2 = tf.concat([s[0] + s[2], s[1] + s[3]], -1)
         return y1, y2
