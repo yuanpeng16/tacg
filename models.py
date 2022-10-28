@@ -61,16 +61,16 @@ class AbstractModelGenerator(object):
 
     # baseline ---------------------------------------
     def baseline_encoder(self, x):
-        x = tf.keras.layers.Embedding(2, 8)(x)
+        x = tf.keras.layers.Embedding(2, 64)(x)
         x = tf.keras.layers.Flatten()(x)
-        x = self.ff(2, x, 'linear', 2)
+        x = self.ff(2, x, 'linear', depth=8)
         return x
 
     def baseline_regularization(self, x):
         return x
 
     def baseline_decoder(self, x):
-        x = self.ff(16, x, 'relu', 2)
+        x = self.ff(128, x, 'relu', depth=2)
         y1 = self.get_output_layer(x, 'y1')
         y2 = self.get_output_layer(x, 'y2')
         return y1, y2
