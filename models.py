@@ -76,7 +76,7 @@ class AbstractModelGenerator(object):
         return y1, y2
 
     # proposed ---------------------------------------
-    def get_a_decoder(self, x):
+    def encode_factor(self, x):
         x = tf.keras.layers.Embedding(2, 32)(x)
         x = self.regularization(x)
         x = tf.keras.layers.Flatten()(x)
@@ -84,8 +84,8 @@ class AbstractModelGenerator(object):
         return x
 
     def proposed_encoder(self, x):
-        h1 = self.get_a_decoder(x)
-        h2 = self.get_a_decoder(x)
+        h1 = self.encode_factor(x)
+        h2 = self.encode_factor(x)
         h = tf.concat([h1, h2], -1)
         return h
 
