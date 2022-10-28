@@ -53,10 +53,10 @@ class AbstractModelGenerator(object):
         h = self.encoder(x)
 
         # regularization
-        l = self.regularization(h)
+        r = self.regularization(h)
 
         # decoder
-        y1, y2 = self.decoder(l)
+        y1, y2 = self.decoder(r)
         return [y1, y2], h
 
     # baseline ---------------------------------------
@@ -66,8 +66,8 @@ class AbstractModelGenerator(object):
         x = self.ff(2, x, 'linear', 2)
         return x
 
-    def baseline_regularization(self, l):
-        return l
+    def baseline_regularization(self, x):
+        return x
 
     def baseline_decoder(self, x):
         x = self.ff(16, x, 'relu', 2)
@@ -77,29 +77,29 @@ class AbstractModelGenerator(object):
 
     # proposed ---------------------------------------
     def get_a_decoder(self, x):
-        a1 = tf.keras.layers.Embedding(2, 32)(x)
-        a1 = self.regularization(a1)
-        b = tf.keras.layers.Flatten()(a1)
-        b = self.ff(1, b, 'linear', depth=8)
-        return b
+        x = tf.keras.layers.Embedding(2, 32)(x)
+        x = self.regularization(x)
+        x = tf.keras.layers.Flatten()(x)
+        x = self.ff(1, x, 'linear', depth=8)
+        return x
 
     def proposed_encoder(self, x):
-        b = self.get_a_decoder(x)
-        c = self.get_a_decoder(x)
-        h = tf.concat([b, c], -1)
+        h1 = self.get_a_decoder(x)
+        h2 = self.get_a_decoder(x)
+        h = tf.concat([h1, h2], -1)
         return h
 
-    def proposed_regularization(self, l):
-        l = tf.keras.layers.ActivityRegularization(l2=self.args.beta)(l)
-        l = tf.keras.layers.GaussianNoise(self.args.alpha)(l)
-        return l
+    def proposed_regularization(self, x):
+        x = tf.keras.layers.ActivityRegularization(l2=self.args.beta)(x)
+        x = tf.keras.layers.GaussianNoise(self.args.alpha)(x)
+        return x
 
     def proposed_decoder(self, x):
-        b, c = tf.split(x, 2, -1)
-        b = self.ff(1, b, 'sigmoid', depth=2)
-        c = self.ff(1, c, 'sigmoid', depth=2)
-        y1 = tf.concat([c, 1 - c], -1)
-        xor = 2 * (b - 0.5) * (c - 0.5) + 0.5
+        h1, h2 = tf.split(x, 2, -1)
+        h1 = self.ff(1, h1, 'sigmoid', depth=2)
+        h2 = self.ff(1, h2, 'sigmoid', depth=2)
+        y1 = tf.concat([h2, 1 - h2], -1)
+        xor = 2 * (h1 - 0.5) * (h2 - 0.5) + 0.5
         y2 = tf.concat([xor, 1 - xor], -1)
         return y1, y2
 
