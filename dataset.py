@@ -11,20 +11,11 @@ class Dataset(object):
     def __init__(self):
         self.train_samples, self.test_samples = self.get_samples()
 
-    def get_output2(self, x):
-        if x[0] == 0:
-            z = [x[1], x[1] ^ x[2]]
-        else:
-            z = [x[2], x[2] ^ x[1]]
-        y = [z[1], z[0] ^ z[1]]
-        y = [one_hot(yi, 2) for yi in y]
-        return y
-
     def get_output(self, x):
-        if x[0] == 0:
-            z = [x[1], x[2]]
-        else:
-            z = [x[2], x[1]]
+        z = [
+            x[0] ^ x[1],
+            x[1] ^ x[2]
+        ]
         y = [z[1], z[0] ^ z[1]]
         y = [one_hot(yi, 2) for yi in y]
         return y
@@ -33,14 +24,14 @@ class Dataset(object):
         train_x = [
             [0, 0, 0],
             [0, 0, 1],
-            [0, 1, 0],
+            [0, 1, 1],
             [1, 0, 0],
-            [1, 0, 1],
             [1, 1, 0],
+            [1, 1, 1],
         ]
         test_x = [
-            [0, 1, 1],
-            [1, 1, 1],
+            [0, 1, 0],
+            [1, 0, 1],
         ]
 
         train_y = [self.get_output(x) for x in train_x]

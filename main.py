@@ -36,7 +36,8 @@ def dump_hidden_representation(sorted_list, log_dir):
 
 def get_hidden_representations(ev, log_dir):
     tr, ts = ev.get_hidden_representations()
-    sorted_list = [[tr[0], tr[3]], [tr[1], tr[5]], [tr[2], tr[4]], ts]
+    #sorted_list = [[tr[0], tr[3]], [tr[1], tr[5]], [tr[2], tr[4]], ts]
+    sorted_list = [[tr[0], tr[5]], [tr[1], tr[4]], [tr[2], tr[3]], ts]
     sorted_list = np.asarray(sorted_list)
     markers = ['s', 's', '^', '^']
     colors = ['none', 'black', 'none', 'black']
@@ -80,7 +81,7 @@ if __name__ == '__main__':
                         help='Random seed.')
     parser.add_argument('--parameter_random_seed', type=int, default=7,
                         help='Random seed.')
-    parser.add_argument('--steps', type=int, default=2000,
+    parser.add_argument('--steps', type=int, default=1000,
                         help='Steps.')
     parser.add_argument('--batch_size', type=int, default=6,
                         help='Batch size.')
@@ -90,6 +91,6 @@ if __name__ == '__main__':
                         help='Learning rate.')
     parser.add_argument('--alpha', type=float, default=0.01,
                         help='Alpha.')
-    parser.add_argument('--beta', type=float, default=0.1,
+    parser.add_argument('--beta', type=float, default=1,
                         help='Beta.')
     main(parser.parse_args())
