@@ -87,10 +87,10 @@ if __name__ == '__main__':
                         help='Batch size.')
     parser.add_argument('--log_interval', type=int, default=100,
                         help='Log interval.')
-    parser.add_argument('--lr', type=float, default=0.1,
+    parser.add_argument('--lr', type=float, default=0.0001,
                         help='Learning rate.')
-    parser.add_argument('--alpha', type=float, default=0.001,
+    parser.add_argument('--alpha', type=float, default=0.01,
                         help='Alpha.')
-    parser.add_argument('--beta', type=float, default=0.1,
+    parser.add_argument('--beta', type=float, default=1,
                         help='Beta.')
     main(parser.parse_args())

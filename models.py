@@ -38,7 +38,7 @@ class AbstractModelGenerator(object):
 
     def get_model(self):
         model, encoder = self.get_structure()
-        adam = tf.keras.optimizers.Adam(lr=self.args.lr)
+        adam = tf.keras.optimizers.Adam(learning_rate=self.args.lr)
         model.compile(optimizer=adam, loss='categorical_crossentropy',
                       metrics=['accuracy'])
         return model, encoder
