@@ -83,7 +83,7 @@ if __name__ == '__main__':
                         help='Random seed.')
     parser.add_argument('--steps', type=int, default=1000,
                         help='Steps.')
-    parser.add_argument('--batch_size', type=int, default=6000,
+    parser.add_argument('--batch_size', type=int, default=1000,
                         help='Batch size.')
     parser.add_argument('--log_interval', type=int, default=100,
                         help='Log interval.')

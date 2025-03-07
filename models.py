@@ -41,10 +41,15 @@ class AbstractModelGenerator(object):
                       metrics=['accuracy'])
         return model, encoder
 
-    def ff(self, out_size, x, activation, depth=3):
+    def ff(self, out_size, x, activation, depth=3, regularize=False):
         for _ in range(depth - 1):
             x = Dense(4 * self.args.embedding_size, activation='relu')(x)
-        return Dense(out_size, activation=activation)(x)
+            if regularize:
+                x = self.regularization(x)
+        x = Dense(out_size, activation=activation)(x)
+        if regularize:
+            x = self.regularization(x)
+        return x
 
     def encode_factor(self, x):
         x = tf.keras.layers.Embedding(2, self.args.embedding_size)(x)
@@ -88,8 +93,8 @@ class AbstractModelGenerator(object):
         x = self.encode_factor(x)
         h, x3 = tf.split(x, [2, 1], 1)
         h = tf.keras.layers.Flatten()(h)
-        h = self.ff(2 * self.args.embedding_size, h, 'linear', depth=2)
-        h = self.regularization(h)
+        h = self.ff(2 * self.args.embedding_size, h, 'linear', depth=2,
+                    regularize=True)
         x3 = tf.keras.layers.Flatten()(x3)
         y = tf.concat([h, x3], -1)
         y = self.ff(2, y, 'softmax', depth=2)

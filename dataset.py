@@ -95,16 +95,12 @@ class XorDataset(Dataset):
 
     def get_data(self):
         train_x = [
-            [0, 0, 0],
             [0, 1, 0],
             [1, 0, 1],
-            [1, 1, 1],
-            [0, 0, 1],
-            [0, 1, 1],
         ]
         test_x = [
             [1, 0, 0],
-            [1, 1, 0],
+            [0, 1, 1],
         ]
         assert self.check_seen(train_x, test_x)
         return train_x, test_x
@@ -118,3 +114,21 @@ class XorDataset(Dataset):
             if tuple([x[0] ^ x[1], x[2]]) not in z_train:
                 return False
         return True
+
+
+class FullXorDataset(XorDataset):
+    def get_data(self):
+        train_x = [
+            [0, 0, 0],
+            [0, 1, 0],
+            [1, 0, 1],
+            [1, 1, 1],
+        ]
+        test_x = [
+            [0, 0, 1],
+            [0, 1, 1],
+            [1, 0, 0],
+            [1, 1, 0],
+        ]
+        assert self.check_seen(train_x, test_x)
+        return train_x, test_x
