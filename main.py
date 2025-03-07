@@ -55,7 +55,7 @@ def main(args):
     log_dir = os.path.join("logs", args.model, str(args.parameter_random_seed))
 
     dg = Dataset()
-    train_samples = dg.get_train_samples(6)
+    train_samples = dg.get_train_samples()
     test_samples = dg.get_test_samples()
     datasets = [train_samples, test_samples]
 
@@ -70,12 +70,12 @@ def main(args):
     print("final", *ev.evaluate_all())
 
     # output hidden representations
-    get_hidden_representations(ev, log_dir)
+#    get_hidden_representations(ev, log_dir)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', type=str, default='baseline',
+    parser.add_argument('--model', type=str, default='proposed',
                         help='Model type.')
     parser.add_argument('--data_random_seed', type=int, default=8,
                         help='Random seed.')
@@ -83,14 +83,14 @@ if __name__ == '__main__':
                         help='Random seed.')
     parser.add_argument('--steps', type=int, default=1000,
                         help='Steps.')
-    parser.add_argument('--batch_size', type=int, default=6,
+    parser.add_argument('--batch_size', type=int, default=6000,
                         help='Batch size.')
     parser.add_argument('--log_interval', type=int, default=100,
                         help='Log interval.')
-    parser.add_argument('--lr', type=float, default=0.0001,
+    parser.add_argument('--lr', type=float, default=0.001,
                         help='Learning rate.')
-    parser.add_argument('--alpha', type=float, default=0.01,
+    parser.add_argument('--alpha', type=float, default=0.1,
                         help='Alpha.')
-    parser.add_argument('--beta', type=float, default=1,
+    parser.add_argument('--beta', type=float, default=0.1,
                         help='Beta.')
     main(parser.parse_args())

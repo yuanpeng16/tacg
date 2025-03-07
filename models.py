@@ -12,8 +12,6 @@ def get_model_generator(args):
         model = ProposedModelGenerator(args)
     elif name == 'no_regularization':
         model = NoRegularizationModelGenerator(args)
-    elif name == 'no_encoder':
-        model = NoEncoderModelGenerator(args)
     elif name == 'no_decoder':
         model = NoDecoderModelGenerator(args)
     else:
@@ -48,66 +46,47 @@ class AbstractModelGenerator(object):
             x = Dense(128, activation='relu')(x)
         return Dense(out_size, activation=activation)(x)
 
-    def get_main_model(self, x):
-        # encoder
-        h = self.encoder(x)
-
-        # regularization
-        r = self.regularization(h)
-
-        # decoder
-        y1, y2 = self.decoder(r)
-        return [y1, y2], h
-
-    # baseline ---------------------------------------
-    def baseline_encoder(self, x):
-        x = tf.keras.layers.Embedding(2, 64)(x)
-        x = tf.keras.layers.Flatten()(x)
-        x = self.ff(2, x, 'linear', depth=8)
+    def encode_factor(self, x):
+        x = tf.keras.layers.Embedding(2, 32)(x)
+        x = self.regularization(x)
         return x
 
+    def get_main_model(self, x):
+        y1, y2 = self.decoder(x)
+        return [y1, y2], x
+
+    # baseline ---------------------------------------
     def baseline_regularization(self, x):
         return x
 
     def baseline_decoder(self, x):
+        x = self.encode_factor(x)
+        x = tf.keras.layers.Flatten()(x)
         x = self.ff(128, x, 'relu', depth=2)
         y1 = self.get_output_layer(x, 'y1')
         y2 = self.get_output_layer(x, 'y2')
         return y1, y2
 
     # proposed ---------------------------------------
-    def encode_factor(self, x):
-        x = tf.keras.layers.Embedding(2, 32)(x)
-        x = self.regularization(x)
-        x = tf.keras.layers.Flatten()(x)
-        x = self.ff(1, x, 'linear', depth=8)
-        return x
-
-    def proposed_encoder(self, x):
-        h1 = self.encode_factor(x)
-        h2 = self.encode_factor(x)
-        h = tf.concat([h1, h2], -1)
-        return h
-
     def proposed_regularization(self, x):
         x = tf.keras.layers.ActivityRegularization(l2=self.args.beta)(x)
         x = tf.keras.layers.GaussianNoise(self.args.alpha)(x)
         return x
 
     def proposed_decoder(self, x):
-        h1, h2 = tf.split(x, 2, -1)
-        h1 = self.ff(1, h1, 'sigmoid', depth=2)
-        h2 = self.ff(1, h2, 'sigmoid', depth=2)
-        y1 = tf.concat([h2, 1 - h2], -1)
-        xor = 2 * (h1 - 0.5) * (h2 - 0.5) + 0.5
-        y2 = tf.concat([xor, 1 - xor], -1)
-        return y1, y2
+        attention = self.encode_factor(x)
+        attention = tf.keras.layers.Flatten()(attention)
+        attention = self.ff(3, attention, 'softmax', depth=2)
+        attention = tf.expand_dims(attention, 1)
+
+        values = self.encode_factor(x)
+        attended = tf.matmul(attention, values)
+        attended = tf.keras.layers.Flatten()(attended)
+        y = self.ff(2, attended, 'softmax', depth=2)
+        return y, y
 
 
 class BaselineModelGenerator(AbstractModelGenerator):
-    def encoder(self, x):
-        return self.baseline_encoder(x)
-
     def regularization(self, x):
         return self.baseline_regularization(x)
 
@@ -116,9 +95,6 @@ class BaselineModelGenerator(AbstractModelGenerator):
 
 
 class ProposedModelGenerator(AbstractModelGenerator):
-    def encoder(self, x):
-        return self.proposed_encoder(x)
-
     def regularization(self, x):
         return self.proposed_regularization(x)
 
@@ -129,11 +105,6 @@ class ProposedModelGenerator(AbstractModelGenerator):
 class NoRegularizationModelGenerator(ProposedModelGenerator):
     def regularization(self, x):
         return self.baseline_regularization(x)
-
-
-class NoEncoderModelGenerator(ProposedModelGenerator):
-    def encoder(self, x):
-        return self.baseline_encoder(x)
 
 
 class NoDecoderModelGenerator(ProposedModelGenerator):

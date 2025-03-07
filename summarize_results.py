@@ -7,7 +7,7 @@ def read_file(fn):
         lines = f.readlines()
     line = lines[-1]
     term = line.strip().split(' ')[-1]
-    acc = float(term)
+    acc = float(term[:-1])
     return acc
 
 
@@ -22,16 +22,14 @@ def get_result(model, name):
         acc = read_file(log_path)
         results.append(acc)
     results = np.asarray(results)
-    mean = round(np.mean(results), 1)
-    std = round(np.std(results), 1)
+    mean = round(np.mean(results), 2)
+    std = round(np.std(results), 2)
     output(name, mean, std)
 
 
 def main():
-    models = ['baseline', 'proposed', 'no_regularization', 'no_encoder',
-              'no_decoder']
-    names = ['Baseline', 'Proposed', 'No regularization', 'No encoder design',
-             'No decoder design']
+    models = ['baseline', 'proposed', 'no_regularization', 'no_decoder']
+    names = ['Baseline', 'Proposed', 'No regularization', 'No decoder design']
     for model, name in zip(models, names):
         get_result(model, name)
 

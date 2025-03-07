@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+from torch.backends.mkl import verbose
 
 
 class Evaluator(object):
@@ -44,7 +45,8 @@ class Evaluator(object):
 
     def evaluate(self, x, y):
         y_hat = self.forward(x)
-        return self.get_accuracy(y_hat, y)
+        loss = self.model.evaluate(x, y, verbose=0)
+        return loss[0], self.get_accuracy(y_hat, y)
 
     def evaluate_datasets(self, datasets):
         ret = []
