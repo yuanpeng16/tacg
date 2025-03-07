@@ -90,6 +90,7 @@ class AbstractModelGenerator(object):
         h, x3 = tf.split(x, [2, 1], 1)
         h = tf.keras.layers.Flatten()(h)
         h = self.ff(2 * self.args.embedding_size, h, 'linear', depth=2)
+        h = self.regularization(h)
         x3 = tf.keras.layers.Flatten()(x3)
         y = tf.concat([h, x3], -1)
         y = self.ff(2, y, 'softmax', depth=2)
