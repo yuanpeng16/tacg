@@ -5,7 +5,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 import os
 
-from dataset import Dataset
+from dataset import get_dataset
 from models import get_model_generator
 from evaluator import Evaluator
 
@@ -54,7 +54,7 @@ def main(args):
     set_random_seeds(args.data_random_seed, args.parameter_random_seed)
     log_dir = os.path.join("logs", args.model, str(args.parameter_random_seed))
 
-    dg = Dataset()
+    dg = get_dataset(args.task)
     train_samples = dg.get_train_samples()
     test_samples = dg.get_test_samples()
     datasets = [train_samples, test_samples]
@@ -93,4 +93,8 @@ if __name__ == '__main__':
                         help='Alpha.')
     parser.add_argument('--beta', type=float, default=0.1,
                         help='Beta.')
+    parser.add_argument('--task', type=str, default='xor',
+                        help='Task type.')
+    parser.add_argument('--embedding_size', type=int, default=32,
+                        help='Embedding size.')
     main(parser.parse_args())

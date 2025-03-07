@@ -1,6 +1,14 @@
 import numpy as np
 
 
+def get_dataset(name):
+    if name == "attention":
+        return AttentionDataset()
+    elif name == "xor":
+        return XorDataset()
+    assert False
+
+
 def one_hot(a, output_nodes):
     ret = [0] * output_nodes
     ret[a] = 1
@@ -11,38 +19,11 @@ class Dataset(object):
     def __init__(self):
         self.train_samples, self.test_samples = self.get_samples()
 
-    def get_output1(self, x):
-        z = [
-            x[0] ^ x[1],
-            x[1] ^ x[2]
-        ]
-        y = [z[1], z[0] ^ z[1]]
-        y = [one_hot(yi, 2) for yi in y]
-        return y
-
     def get_output(self, x):
-        if x[0] == 0:
-            z = x[1] % 2
-        else:
-            z = x[2] % 2
-        y = [z, z]
-        y = [one_hot(yi, 2) for yi in y]
-        return y
+        raise NotImplementedError()
 
     def get_samples(self):
-        train_x = [
-            [0, 0, 0],
-            [0, 1, 0],
-            [1, 0, 1],
-            [1, 1, 0],
-        ]
-        test_x = [
-            [0, 0, 1],
-            [0, 1, 1],
-            [1, 0, 0],
-            [1, 1, 1],
-        ]
-
+        train_x, test_x = self.get_data()
         train_y = [self.get_output(x) for x in train_x]
         train_y = np.asarray(train_y)
         train_y = np.transpose(train_y, [1, 0, 2])
@@ -65,3 +46,75 @@ class Dataset(object):
 
     def get_test_samples(self):
         return self.test_samples
+
+
+class AttentionDataset(Dataset):
+    def get_output(self, x):
+        if x[0] == 0:
+            z = x[1] % 2
+        else:
+            z = x[2] % 2
+        y = [z, z]
+        y = [one_hot(yi, 2) for yi in y]
+        return y
+
+    def get_data(self):
+        train_x = [
+            [0, 0, 0],
+            [0, 1, 0],
+            [1, 0, 1],
+            [1, 1, 0],
+        ]
+        test_x = [
+            [0, 0, 1],
+            [0, 1, 1],
+            [1, 0, 0],
+            [1, 1, 1],
+        ]
+        return train_x, test_x
+
+
+class StructureDataset(AttentionDataset):
+    def get_output(self, x):
+        z = [
+            x[0] ^ x[1],
+            x[1] ^ x[2]
+        ]
+        y = [z[1], z[0] ^ z[1]]
+        y = [one_hot(yi, 2) for yi in y]
+        return y
+
+
+class XorDataset(Dataset):
+    def get_output(self, x):
+        h = x[0] ^ x[1]
+        y = h ^ x[2]
+        y = one_hot(y, 2)
+        y = [y, y]
+        return y
+
+    def get_data(self):
+        train_x = [
+            [0, 0, 0],
+            [0, 1, 0],
+            [1, 0, 1],
+            [1, 1, 1],
+        ]
+        test_x = [
+            [0, 0, 1],
+            [0, 1, 1],
+            [1, 0, 0],
+            [1, 1, 0],
+        ]
+        assert self.check_seen(train_x, test_x)
+        return train_x, test_x
+
+    def check_seen(self, train_x, test_x):
+        x_train = {tuple(x[0:2]) for x in train_x}
+        z_train = {tuple([x[0] ^ x[1], x[2]]) for x in train_x}
+        for x in test_x:
+            if tuple(x[0:2]) not in x_train:
+                return False
+            if tuple([x[0] ^ x[1], x[2]]) not in z_train:
+                return False
+        return True
