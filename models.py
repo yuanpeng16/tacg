@@ -48,7 +48,6 @@ class AbstractModelGenerator(object):
 
     def encode_factor(self, x):
         x = tf.keras.layers.Embedding(2, self.args.embedding_size)(x)
-        x = self.regularization(x)
         return x
 
     def get_main_model(self, x):
