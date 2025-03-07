@@ -1,5 +1,4 @@
 import numpy as np
-from sympy.physics.units import length
 
 
 def one_hot(a, output_nodes):

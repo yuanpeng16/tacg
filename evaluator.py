@@ -1,6 +1,4 @@
-import numpy as np
 import tensorflow as tf
-from torch.backends.mkl import verbose
 
 
 class Evaluator(object):
