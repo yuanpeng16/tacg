@@ -9,6 +9,7 @@
 
     sh experiments/no_regularization.sh
     sh experiments/no_decoder.sh
+    sh experiments/lack_data.sh
 
 ## Summarize results
 
