@@ -95,12 +95,16 @@ class XorDataset(Dataset):
 
     def get_data(self):
         train_x = [
-            [0, 1, 0],
-            [1, 0, 1],
+            [0, 0, 0],  # 0
+            [0, 1, 0],  # 1
+            [1, 0, 1],  # 0
+            [1, 1, 1],  # 1
+            [0, 0, 1],  # 1
+            [0, 1, 1],  # 0
         ]
         test_x = [
-            [1, 0, 0],
-            [0, 1, 1],
+            [1, 0, 0],  # 1
+            [1, 1, 0],  # 0
         ]
         assert self.check_seen(train_x, test_x)
         return train_x, test_x
@@ -119,16 +123,16 @@ class XorDataset(Dataset):
 class FullXorDataset(XorDataset):
     def get_data(self):
         train_x = [
-            [0, 0, 0], # 0
-            [0, 1, 0], # 1
-            [1, 0, 1], # 0
-            [1, 1, 1], # 1
+            [0, 0, 0],  # 0
+            [0, 1, 0],  # 1
+            [1, 0, 1],  # 0
+            [1, 1, 1],  # 1
         ]
         test_x = [
-            [0, 0, 1], # 1
-            [0, 1, 1], # 0
-            [1, 0, 0], # 1
-            [1, 1, 0], # 0
+            [0, 0, 1],  # 1
+            [0, 1, 1],  # 0
+            [1, 0, 0],  # 1
+            [1, 1, 0],  # 0
         ]
         assert self.check_seen(train_x, test_x)
         return train_x, test_x
