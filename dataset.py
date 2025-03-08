@@ -1,11 +1,14 @@
 import numpy as np
 
 
-def get_dataset(name):
+def get_dataset(name, model):
     if name == "attention":
         return AttentionDataset()
     elif name == "xor":
-        return XorDataset()
+        if model == "lack_data":
+            return LackXorDataset()
+        else:
+            return XorDataset()
     assert False
 
 
@@ -120,7 +123,7 @@ class XorDataset(Dataset):
         return True
 
 
-class FullXorDataset(XorDataset):
+class LackXorDataset(XorDataset):
     def get_data(self):
         train_x = [
             [0, 0, 0],  # 0
@@ -129,8 +132,6 @@ class FullXorDataset(XorDataset):
             [1, 1, 1],  # 1
         ]
         test_x = [
-            [0, 0, 1],  # 1
-            [0, 1, 1],  # 0
             [1, 0, 0],  # 1
             [1, 1, 0],  # 0
         ]

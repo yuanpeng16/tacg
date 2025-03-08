@@ -9,7 +9,7 @@ def get_model_generator(args):
     name = args.model
     if name == 'baseline':
         model = BaselineModelGenerator(args)
-    elif name == 'proposed':
+    elif name == 'proposed' or name == 'lack_data':
         model = ProposedModelGenerator(args)
     elif name == 'no_regularization':
         model = NoRegularizationModelGenerator(args)

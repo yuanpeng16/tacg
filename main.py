@@ -54,7 +54,7 @@ def main(args):
     set_random_seeds(args.data_random_seed, args.parameter_random_seed)
     log_dir = os.path.join("logs", args.model, str(args.parameter_random_seed))
 
-    dg = get_dataset(args.task)
+    dg = get_dataset(args.task, args.model)
     train_samples = dg.get_train_samples()
     test_samples = dg.get_test_samples()
     datasets = [train_samples, test_samples]
