@@ -154,13 +154,14 @@ class ArchitectureModelGenerator(ProposedModelGenerator):
 
         h = self.encode_factor(h)
         h = tf.keras.layers.Flatten()(h)
-        h = self.ff(2 * self.args.embedding_size, h, 'linear', depth=2,
+        h = self.ff(self.args.embedding_size, h, 'linear', depth=2,
                     regularize=True)
+        h = self.ff(self.args.embedding_size, h, 'linear', depth=2)
 
         z = 2 * tf.cast(z, tf.float32) - 1
         z = tf.keras.layers.Flatten()(z)
-        
-        y = h * z
-        y = tf.reduce_mean(y, -1, keepdims=True)
+        z = Dense(self.args.embedding_size, activation='linear')(z)
+
+        y = tf.reduce_mean(h * z, -1, keepdims=True)
         y = self.ff(2, y, 'softmax', depth=2)
         return y, y
