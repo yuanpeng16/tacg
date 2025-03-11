@@ -2,14 +2,14 @@
 
 ## Main experiments
 
-    sh experiments/baseline.sh
-    sh experiments/proposed.sh
+    sh experiments/xor/baseline.sh
+    sh experiments/xor/proposed.sh
 
 ## Ablation experiments
 
-    sh experiments/no_regularization.sh
-    sh experiments/no_decoder.sh
-    sh experiments/lack_data.sh
+    sh experiments/xor/no_regularization.sh
+    sh experiments/xor/no_decoder.sh
+    sh experiments/xor/lack_data.sh
 
 ## Summarize results
 

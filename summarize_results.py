@@ -1,4 +1,5 @@
 import os
+import argparse
 import numpy as np
 
 
@@ -27,14 +28,18 @@ def get_result(model, name):
     output(name, mean, std)
 
 
-def main():
+def main(args):
     models = ['baseline', 'proposed', 'no_regularization', 'no_decoder',
               'lack_data']
     names = ['Baseline', 'Proposed', 'No regularization', 'No decoder design',
              'Lack training data']
+    models = [os.path.join(args.task, x) for x in models]
     for model, name in zip(models, names):
         get_result(model, name)
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--task', type=str, default='xor',
+                        help='Task type.')
+    main(parser.parse_args())
