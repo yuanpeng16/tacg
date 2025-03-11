@@ -54,25 +54,25 @@ class Dataset(object):
 class AttentionDataset(Dataset):
     def get_output(self, x):
         if x[0] == 0:
-            z = x[1] % 2
+            z = x[1]
         else:
-            z = x[2] % 2
+            z = x[2]
         y = [z, z]
         y = [one_hot(yi, 2) for yi in y]
         return y
 
     def get_data(self):
         train_x = [
-            [0, 0, 0],
-            [0, 1, 0],
-            [1, 0, 1],
-            [1, 1, 0],
+            [0, 0, 0],  # 0
+            [0, 1, 0],  # 1
+            [1, 0, 1],  # 1
+            [1, 1, 0],  # 0
         ]
         test_x = [
-            [0, 0, 1],
-            [0, 1, 1],
-            [1, 0, 0],
-            [1, 1, 1],
+            [0, 0, 1],  # 0
+            [0, 1, 1],  # 1
+            [1, 0, 0],  # 0
+            [1, 1, 1],  # 1
         ]
         return train_x, test_x
 
