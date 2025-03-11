@@ -42,22 +42,17 @@ class AbstractModelGenerator(object):
                       metrics=['accuracy'])
         return model, encoder
 
-    def ffr(self, out_size, x, activation):
-        x = Dense(out_size, activation='relu')(x)
-        x = self.regularization(x)
-        x = Activation(activation)(x)
+    def ffr(self, out_size, x, activation, regularize=False):
+        x = Dense(out_size, activation=activation)(x)
+        if regularize:
+            x = self.regularization(x)
         return x
 
     def ff(self, out_size, x, activation, depth=3, regularize=False):
         for _ in range(depth - 1):
-            if regularize:
-                x = self.ffr(4 * self.args.embedding_size, x, 'relu')
-            else:
-                x = Dense(4 * self.args.embedding_size, activation='relu')(x)
-        if regularize:
-            x = self.ffr(out_size, x, activation)
-        else:
-            x = Dense(out_size, activation=activation)(x)
+            x = self.ffr(4 * self.args.embedding_size, x, 'relu',
+                         regularize=regularize)
+        x = self.ffr(out_size, x, activation, regularize=regularize)
         return x
 
     def encode_factor(self, x):
