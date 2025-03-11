@@ -5,7 +5,7 @@ def get_dataset(name, model):
     if name == "attention":
         return AttentionDataset()
     elif name == "xor":
-        if model == "lack_data":
+        if model == "lack_data" or model == "architecture":
             return LackXorDataset()
         else:
             return XorDataset()

@@ -30,9 +30,9 @@ def get_result(model, name):
 
 def main(args):
     models = ['baseline', 'proposed', 'no_regularization', 'no_decoder',
-              'lack_data']
+              'lack_data', 'architecture']
     names = ['Baseline', 'Proposed', 'No regularization', 'No decoder design',
-             'Lack training data']
+             'Lack training data', 'Architecture']
     models = [os.path.join(args.task, x) for x in models]
     for model, name in zip(models, names):
         get_result(model, name)
