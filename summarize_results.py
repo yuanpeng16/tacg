@@ -33,6 +33,9 @@ def main(args):
               'lack_data', 'architecture']
     names = ['Baseline', 'Proposed', 'No regularization', 'No decoder design',
              'Lack training data', 'Architecture']
+    if args.task == 'lack':
+        models = models[:4]
+        names = names[:4]
     models = [os.path.join(args.task, x) for x in models]
     for model, name in zip(models, names):
         get_result(model, name)
