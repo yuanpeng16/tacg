@@ -33,7 +33,7 @@ def main(args):
               'lack_data', 'architecture']
     names = ['Baseline', 'Proposed', 'No regularization', 'No decoder design',
              'Lack training data', 'Architecture']
-    if args.task == 'lack':
+    if args.task == 'lack' or args.task == 'attention':
         models = models[:4]
         names = names[:4]
     models = [os.path.join(args.task, x) for x in models]
