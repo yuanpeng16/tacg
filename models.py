@@ -14,8 +14,6 @@ def get_model_generator(args):
         model = NoRegularizationModelGenerator(args)
     elif name == 'no_decoder':
         model = NoDecoderModelGenerator(args)
-    elif name == 'architecture':
-        model = ArchitectureModelGenerator(args)
     else:
         raise ValueError(
             '{0} is not a valid model.'.format(args.model))
@@ -114,11 +112,30 @@ class AbstractModelGenerator(object):
         y = self.ff(2, y, 'softmax', depth=2)
         return y, y
 
+    def lack_decoder(self, x):
+        h, z = tf.split(x, [2, 1], 1)
+
+        h = self.encode_factor(h)
+        h = tf.keras.layers.Flatten()(h)
+        h = self.ff(self.args.embedding_size, h, 'linear', depth=2,
+                    regularize=True)
+        h = self.ff(self.args.embedding_size, h, 'linear', depth=2)
+
+        z = 2 * tf.cast(z, tf.float32) - 1
+        z = tf.keras.layers.Flatten()(z)
+        z = Dense(self.args.embedding_size, activation='linear')(z)
+
+        y = tf.reduce_mean(h * z, -1, keepdims=True)
+        y = self.ff(2, y, 'softmax', depth=2)
+        return y, y
+
     def proposed_decoder(self, x):
         if self.args.task == "attention":
             return self.attention_decoder(x)
         elif self.args.task == "xor":
             return self.xor_decoder(x)
+        elif self.args.task == "lack":
+            return self.lack_decoder(x)
         assert False
 
 
@@ -146,22 +163,3 @@ class NoRegularizationModelGenerator(ProposedModelGenerator):
 class NoDecoderModelGenerator(ProposedModelGenerator):
     def decoder(self, x):
         return self.baseline_decoder(x)
-
-
-class ArchitectureModelGenerator(ProposedModelGenerator):
-    def decoder(self, x):
-        h, z = tf.split(x, [2, 1], 1)
-
-        h = self.encode_factor(h)
-        h = tf.keras.layers.Flatten()(h)
-        h = self.ff(self.args.embedding_size, h, 'linear', depth=2,
-                    regularize=True)
-        h = self.ff(self.args.embedding_size, h, 'linear', depth=2)
-
-        z = 2 * tf.cast(z, tf.float32) - 1
-        z = tf.keras.layers.Flatten()(z)
-        z = Dense(self.args.embedding_size, activation='linear')(z)
-
-        y = tf.reduce_mean(h * z, -1, keepdims=True)
-        y = self.ff(2, y, 'softmax', depth=2)
-        return y, y

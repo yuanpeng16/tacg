@@ -5,10 +5,12 @@ def get_dataset(name, model):
     if name == "attention":
         return AttentionDataset()
     elif name == "xor":
-        if model == "lack_data" or model == "architecture":
+        if model == "lack_data":
             return LackXorDataset()
         else:
             return XorDataset()
+    elif name == "lack":
+        return LackXorDataset()
     assert False
 
 
