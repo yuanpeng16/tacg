@@ -117,10 +117,13 @@ class MultipleEqualChecker(object):
         self.data_map = data_map
         self.input_a = "turn left and look left"
         self.input_b = "turn opposite left and look"
-        input_c = "look and look"
-        input_d = "look opposite left"
-        self.input_c = tuple(input_c.split(" "))
-        self.input_d = tuple(input_d.split(" "))
+
+        replace_inputs = [
+            "look and look",
+            "look opposite left"
+        ]
+        for x in replace_inputs:
+            assert tuple(x.split(" ")) in self.data_map
 
     def check(self, x, y):
         assert len(x) == len(y)
@@ -130,9 +133,6 @@ class MultipleEqualChecker(object):
         first = x == self.input_a and y == self.input_b
         second = x == self.input_b and y == self.input_a
         if not (first or second):
-            return True
-
-        if (self.input_c not in self.data_map) or (self.input_d not in self.data_map):
             return True
         return False
 
