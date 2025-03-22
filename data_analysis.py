@@ -70,6 +70,11 @@ class WordSyntaxChecker(object):
 class ReplacementChecker(object):
     def __init__(self, data_map):
         self.data_map = data_map
+        self.replace_words = {
+            'look': 'walk',
+            'left': 'right',
+            'right': 'left'
+        }
 
     def get_replaced_output(self, replace_word, position, x):
         replace_input = [w for w in x]
@@ -82,12 +87,8 @@ class ReplacementChecker(object):
         assert len(x) == len(y)
         for i, [a, b] in enumerate(zip(x, y)):
             if a == b:
-                if a == 'look':
-                    replace_word = 'walk'
-                elif a == 'left':
-                    replace_word = 'right'
-                elif a == 'right':
-                    replace_word = 'left'
+                if a in self.replace_words:
+                    replace_word = self.replace_words[a]
                 else:
                     continue
                 replaced_x = self.get_replaced_output(replace_word, i, x)
@@ -98,6 +99,24 @@ class ReplacementChecker(object):
 
 
 class MultipleEqualChecker(object):
+    """We consider the following pair.
+        - turn left and look left
+        - turn opposite left and look
+    For them to have the same syntax representation, it requires syntax that
+
+    left = opposite, and = left, look = and, left = look
+
+    Therefore, left = opposite = and = look (1)
+    On the other hand, we consider the following pair.
+        - look and look
+        - look opposite left
+    If (1) holds, they have the same syntax. However, they have different output lengths. The upper one is two and the lower one is three. So, (1) does not hold, and the syntax of the original pair is different.
+
+    :param x:
+    :param y:
+    :return:
+    """
+
     def __init__(self, data_map):
         self.data_map = data_map
         self.input_a = "turn left and look left"
@@ -108,23 +127,6 @@ class MultipleEqualChecker(object):
         self.input_d = tuple(input_d.split(" "))
 
     def check(self, x, y):
-        """We consider the following pair.
-            - turn left and look left
-            - turn opposite left and look
-        For them to have the same syntax representation, it requires syntax that
-
-        left = opposite, and = left, look = and, left = look
-
-        Therefore, left = opposite = and = look (1)
-        On the other hand, we consider the following pair.
-            - look and look
-            - look opposite left
-        If (1) holds, they have the same syntax. However, they have different output lengths. The upper one is two and the lower one is three. So, (1) does not hold, and the syntax of the original pair is different.
-
-        :param x:
-        :param y:
-        :return:
-        """
         assert len(x) == len(y)
         x = " ".join(x)
         y = " ".join(y)
