@@ -111,10 +111,6 @@ class MultipleEqualChecker(object):
         - look and look
         - look opposite left
     If (1) holds, they have the same syntax. However, they have different output lengths. The upper one is two and the lower one is three. So, (1) does not hold, and the syntax of the original pair is different.
-
-    :param x:
-    :param y:
-    :return:
     """
 
     def __init__(self, data_map):
