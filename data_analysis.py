@@ -146,12 +146,17 @@ class WrapperChecker(object):
             ReplacementChecker(data_map),
             MultipleEqualChecker(data_map)
         ]
+        self.counter = [0] * len(self.checkers)
 
     def check(self, x, y):
-        for checker in self.checkers:
+        for i, checker in enumerate(self.checkers):
             if not checker.check(x, y):
                 return False
+            self.counter[i] += 1
         return True
+
+    def get_counter(self):
+        return self.counter
 
 
 class Checker(object):
@@ -164,13 +169,15 @@ class Checker(object):
             for y in value[i + 1:]:
                 if self.checker.check(x, y):
                     equal_pairs.append([x, y])
-
         if len(equal_pairs) > 0:
             print(key)
             for a, b in equal_pairs:
                 print(a)
                 print(b)
                 print()
+
+    def get_count(self):
+        return self.checker.get_counter()
 
 
 def analyze(data):
@@ -190,6 +197,7 @@ def analyze(data):
         if len(value) > 1:
             checker.check_pairs(key[:-1], value)
     print(len(lines), len(input_set))
+    print(checker.get_count())
 
 
 def main():
