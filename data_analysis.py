@@ -158,6 +158,10 @@ class WrapperChecker(object):
 
 
 class Checker(object):
+    """Show that two training samples have different syntax representations,
+     given all training predictions are correct.
+    """
+
     def __init__(self, data_map):
         self.checker = WrapperChecker(data_map)
 
