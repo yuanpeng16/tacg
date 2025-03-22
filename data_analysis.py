@@ -21,20 +21,30 @@ def get_map(words):
     return id_map
 
 
-def get_id_map():
-    action_words = [
-        ['look', 'run', 'walk', 'jump'],
-        ['left', 'right']
-    ]
-    words = [
-        ['twice', 'thrice'],
-        ['and', 'after'],
-        ['opposite', 'around'],
-        ['turn']
-    ]
-    action_id_map = get_map(action_words)
-    function_id_map = get_map(words)
-    return action_id_map, function_id_map
+def convert_to_id(id_map, line):
+    return tuple([id_map.get(word, 0) for word in line])
+
+
+class WordMapper(object):
+    def __init__(self):
+        action_words = [
+            ['look', 'run', 'walk', 'jump'],
+            ['left', 'right']
+        ]
+        words = [
+            ['twice', 'thrice'],
+            ['and', 'after'],
+            ['opposite', 'around'],
+            ['turn']
+        ]
+        self.action_id_map = get_map(action_words)
+        self.function_id_map = get_map(words)
+
+    def get_action_ids(self, line):
+        return convert_to_id(self.action_id_map, line)
+
+    def get_function_id(self, line):
+        return convert_to_id(self.function_id_map, line)
 
 
 class WordSyntaxChecker(object):
@@ -163,17 +173,13 @@ class Checker(object):
                 print()
 
 
-def convert_to_id(id_map, line):
-    return tuple([id_map.get(word, 0) for word in line])
-
-
 def analyze(data):
-    action_id_map, function_id_map = get_id_map()
     lines, outputs = data
+    word_mapper = WordMapper()
     input_set = {}
     for line, output in zip(lines, outputs):
-        reference_syntax = convert_to_id(function_id_map, line)
-        reference_semantics = convert_to_id(action_id_map, line)
+        reference_syntax = word_mapper.get_function_id(line)
+        reference_semantics = word_mapper.get_action_ids(line)
         name = tuple([reference_syntax, reference_semantics, tuple(output)])
         if name not in input_set:
             input_set[name] = []
