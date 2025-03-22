@@ -110,6 +110,10 @@ class MultipleEqualChecker(object):
         direction_words = ['left', 'right']
         pairs = []
         replace_inputs = []
+
+        # type 1
+        # turn left and look left
+        # turn opposite left and look
         for action in action_words:
             for direction in direction_words:
                 pairs.append([
@@ -120,6 +124,27 @@ class MultipleEqualChecker(object):
                     [action, 'and', action],
                     [action, 'opposite', direction]
                 ])
+
+        # type 2
+        direction_pairs = [direction_words, direction_words[::-1]]
+        for d1, d2 in direction_pairs:
+            pairs.append([
+                ['turn', d1, 'twice', 'after', 'turn', d2],
+                ['turn', d2, 'and', 'turn', 'opposite', d1]
+            ])
+            pairs.append([
+                ['turn', 'opposite', d1, 'twice', 'after', 'turn', d2, 'twice'],
+                ['turn', 'opposite', d2, 'and', 'turn', 'opposite', d1, 'twice']
+            ])
+            pairs.append([
+                ['turn', d1, 'twice', 'and', 'turn', d2],
+                ['turn', d2, 'after', 'turn', 'opposite', d1]
+            ])
+            pairs.append([
+                ['turn', 'opposite', d1, 'twice', 'and', 'turn', d2, 'twice'],
+                ['turn', 'opposite', d2, 'after', 'turn', 'opposite', d1, 'twice']
+            ])
+
         self.pair_map = set()
         for x, y in pairs:
             x = tuple(x)
@@ -198,15 +223,25 @@ def analyze(data, swap_list):
     for key, value in input_set.items():
         if len(value) > 1:
             checker.check_pairs(key[:-1], value)
+    print(swap_list)
     print(len(lines), len(input_set))
     print(checker.get_count())
+    print()
 
 
 def main():
     fn = 'SCAN/add_prim_split/tasks_train_addprim_jump.txt'
     data = read_data(fn)
-    swap_list = [0, 0, 0, 0]
-    analyze(data, swap_list)
+    swap_number = 4
+    for i in range(2 ** swap_number):
+        swap_list = []
+        while i > 0:
+            swap_list.append(i % 2)
+            i //= 2
+        swap_list.reverse()
+        swap_list = [0] * (swap_number - len(swap_list)) + swap_list
+
+        analyze(data, swap_list)
 
 
 if __name__ == '__main__':
