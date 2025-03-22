@@ -125,7 +125,7 @@ class MultipleEqualChecker(object):
                     [action, 'opposite', direction]
                 ])
 
-        # type 2: additional data
+        # type 2: semantic conflict
         direction_pairs = [direction_words, direction_words[::-1]]
         for d1, d2 in direction_pairs:
             pairs.append([
