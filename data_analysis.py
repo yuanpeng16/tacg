@@ -100,6 +100,12 @@ class ReplacementChecker(object):
 class MultipleEqualChecker(object):
     def __init__(self, data_map):
         self.data_map = data_map
+        self.input_a = "turn left and look left"
+        self.input_b = "turn opposite left and look"
+        input_c = "look and look"
+        input_d = "look opposite left"
+        self.input_c = tuple(input_c.split(" "))
+        self.input_d = tuple(input_d.split(" "))
 
     def check(self, x, y):
         """We consider the following pair.
@@ -122,19 +128,13 @@ class MultipleEqualChecker(object):
         assert len(x) == len(y)
         x = " ".join(x)
         y = " ".join(y)
-        input_a = "turn left and look left"
-        input_b = "turn opposite left and look"
 
-        first = x == input_a and y == input_b
-        second = x == input_b and y == input_a
+        first = x == self.input_a and y == self.input_b
+        second = x == self.input_b and y == self.input_a
         if not (first or second):
             return True
 
-        input_c = "look and look"
-        input_d = "look opposite left"
-        input_c = tuple(input_c.split(" "))
-        input_d = tuple(input_d.split(" "))
-        if (input_c not in self.data_map) or (input_d not in self.data_map):
+        if (self.input_c not in self.data_map) or (self.input_d not in self.data_map):
             return True
         return False
 
