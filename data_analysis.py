@@ -33,13 +33,15 @@ class WordMapper(object):
 
 class WordSyntaxChecker(object):
     def __init__(self):
-        unequal_syntax_list = [
-            ['look', 'turn'],  # look left, turn left
-            ['left', 'twice'],  # look left, look twice
-            ['left', 'thrice'],  # look left, look thrice
-            ['right', 'twice'],  # look right, look twice
-            ['right', 'thrice']  # look right, look thrice
-        ]
+        # look left, turn left
+        action_words = ['look', 'run', 'walk']
+        direction_words = ['left', 'right']
+        unequal_syntax_list = []
+        for action in action_words:
+            unequal_syntax_list.append([action, 'turn'])
+        for direction in direction_words:
+            unequal_syntax_list.append([direction, 'twice'])
+            unequal_syntax_list.append([direction, 'thrice'])
         reverse = [[b, a] for [a, b] in unequal_syntax_list]
         unequal_syntax_list = unequal_syntax_list + reverse
         unequal_syntax_list = [tuple(x) for x in unequal_syntax_list]
@@ -56,13 +58,14 @@ class WordSyntaxChecker(object):
 class ReplacementChecker(object):
     def __init__(self, data_map):
         self.data_map = data_map
-        self.replace_words = {
-            'look': 'walk',
-            'run': 'walk',
-            'walk': 'look',
-            'left': 'right',
-            'right': 'left'
-        }
+        action_words = ['look', 'run', 'walk']
+        direction_words = ['left', 'right']
+        replace_words = {}
+        for i in range(len(action_words)):
+            replace_words[action_words[i]] = action_words[i - 1]
+        for i in range(len(direction_words)):
+            replace_words[direction_words[i]] = direction_words[i - 1]
+        self.replace_words = replace_words
 
     def get_replaced_output(self, replace_word, position, x):
         replace_input = [w for w in x]
