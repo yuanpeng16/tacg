@@ -84,6 +84,24 @@ def check_replacing_samples(x, y, data_map):
 
 
 def check_multiple_equal(x, y, data_map):
+    """We consider the following pair.
+        - turn left and look left
+        - turn opposite left and look
+    For them to have the same syntax representation, it requires syntax that
+
+    left = opposite, and = left, look = and, left = look
+
+    Therefore, left = opposite = and = look (1)
+    On the other hand, we consider the following pair.
+        - look and look
+        - look opposite left
+    If (1) holds, they have the same syntax. However, they have different output lengths. The upper one is two and the lower one is three. So, (1) does not hold, and the syntax of the original pair is different.
+
+    :param x:
+    :param y:
+    :param data_map:
+    :return:
+    """
     assert len(x) == len(y)
     x = " ".join(x)
     y = " ".join(y)
