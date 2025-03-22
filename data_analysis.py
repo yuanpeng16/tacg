@@ -14,7 +14,7 @@ def read_data(fn):
 
 
 class WordMapper(object):
-    def __init__(self):
+    def __init__(self, swap_list):
         words = [
             ['twice', 'thrice'],
             ['and', 'after'],
@@ -22,9 +22,9 @@ class WordMapper(object):
             ['turn']
         ]
         id_map = {}
-        for group in words:
+        for swap, group in zip(swap_list, words):
             for i, word in enumerate(group):
-                id_map[word] = i
+                id_map[word] = 1 - i if swap else i
         self.function_id_map = id_map
 
     def get_function_id(self, line):
@@ -183,9 +183,9 @@ class Checker(object):
         return self.checker.get_counter()
 
 
-def analyze(data):
+def analyze(data, swap_list):
     lines, outputs = data
-    word_mapper = WordMapper()
+    word_mapper = WordMapper(swap_list)
     input_set = {}
     for line, output in zip(lines, outputs):
         reference_syntax = word_mapper.get_function_id(line)
@@ -205,7 +205,8 @@ def analyze(data):
 def main():
     fn = 'SCAN/add_prim_split/tasks_train_addprim_jump.txt'
     data = read_data(fn)
-    analyze(data)
+    swap_list = [0, 0, 0, 0]
+    analyze(data, swap_list)
 
 
 if __name__ == '__main__':
