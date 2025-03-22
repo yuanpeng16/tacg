@@ -144,6 +144,14 @@ class MultipleEqualChecker(object):
                 ['turn', 'opposite', d1, 'twice', 'and', 'turn', d2, 'twice'],
                 ['turn', 'opposite', d2, 'after', 'turn', 'opposite', d1, 'twice']
             ])
+        replace_inputs.extend([  # twice = and
+            ['turn', 'left', 'twice', 'after', 'turn', 'right'],
+            ['turn', 'right', 'and', 'turn', 'opposite', 'left']
+        ])
+        replace_inputs.extend([  # twice = after
+            ['turn', 'left', 'twice', 'and', 'turn', 'right'],
+            ['turn', 'right', 'after', 'turn', 'opposite', 'left']
+        ])
 
         self.pair_map = set()
         for x, y in pairs:
