@@ -167,10 +167,10 @@ def analyze(data):
             continue
         reference_syntax = convert_to_id(function_id_map, line)
         reference_semantics = convert_to_id(action_id_map, line)
-        id = tuple([reference_syntax, reference_semantics, tuple(output)])
-        if id not in input_set:
-            input_set[id] = []
-        input_set[id].append(line)
+        name = tuple([reference_syntax, reference_semantics, tuple(output)])
+        if name not in input_set:
+            input_set[name] = []
+        input_set[name].append(line)
     data_map = {tuple(line): output for line, output in zip(lines, outputs)}
     for key, value in input_set.items():
         if len(value) > 1:
