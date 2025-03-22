@@ -13,38 +13,22 @@ def read_data(fn):
     return [inputs, outputs]
 
 
-def get_map(words):
-    id_map = {}
-    for group in words:
-        for i, word in enumerate(group):
-            id_map[word] = i
-    return id_map
-
-
-def convert_to_id(id_map, line):
-    return tuple([id_map.get(word, 0) for word in line])
-
-
 class WordMapper(object):
     def __init__(self):
-        action_words = [
-            ['look', 'run', 'walk', 'jump'],
-            ['left', 'right']
-        ]
         words = [
             ['twice', 'thrice'],
             ['and', 'after'],
             ['opposite', 'around'],
             ['turn']
         ]
-        self.action_id_map = get_map(action_words)
-        self.function_id_map = get_map(words)
-
-    def get_action_ids(self, line):
-        return convert_to_id(self.action_id_map, line)
+        id_map = {}
+        for group in words:
+            for i, word in enumerate(group):
+                id_map[word] = i
+        self.function_id_map = id_map
 
     def get_function_id(self, line):
-        return convert_to_id(self.function_id_map, line)
+        return tuple([self.function_id_map.get(word, 0) for word in line])
 
 
 class WordSyntaxChecker(object):
@@ -52,7 +36,9 @@ class WordSyntaxChecker(object):
         unequal_syntax_list = [
             ['look', 'turn'],  # look left, turn left
             ['left', 'twice'],  # look left, look twice
-            ['left', 'thrice']  # look left, look thrice
+            ['left', 'thrice'],  # look left, look thrice
+            ['right', 'twice'],  # look right, look twice
+            ['right', 'thrice']  # look right, look thrice
         ]
         reverse = [[b, a] for [a, b] in unequal_syntax_list]
         unequal_syntax_list = unequal_syntax_list + reverse
@@ -72,6 +58,8 @@ class ReplacementChecker(object):
         self.data_map = data_map
         self.replace_words = {
             'look': 'walk',
+            'run': 'walk',
+            'walk': 'look',
             'left': 'right',
             'right': 'left'
         }
@@ -115,24 +103,34 @@ class MultipleEqualChecker(object):
 
     def __init__(self, data_map):
         self.data_map = data_map
-        self.input_a = "turn left and look left"
-        self.input_b = "turn opposite left and look"
+        action_words = ['look', 'run', 'walk']
+        direction_words = ['left', 'right']
+        pairs = []
+        replace_inputs = []
+        for action in action_words:
+            for direction in direction_words:
+                pairs.append([
+                    ['turn', direction, 'and', action, direction],
+                    ['turn', 'opposite', direction, 'and', action]
+                ])
+                replace_inputs.extend([
+                    [action, 'and', action],
+                    [action, 'opposite', direction]
+                ])
+        self.pair_map = set()
+        for x, y in pairs:
+            x = tuple(x)
+            y = tuple(y)
+            self.pair_map.add(tuple([x, y]))
+            self.pair_map.add(tuple([y, x]))
 
-        replace_inputs = [
-            "look and look",
-            "look opposite left"
-        ]
         for x in replace_inputs:
-            assert tuple(x.split(" ")) in self.data_map
+            assert tuple(x) in self.data_map
 
     def check(self, x, y):
         assert len(x) == len(y)
-        x = " ".join(x)
-        y = " ".join(y)
-
-        first = x == self.input_a and y == self.input_b
-        second = x == self.input_b and y == self.input_a
-        if not (first or second):
+        key = tuple([tuple(x), tuple(y)])
+        if key not in self.pair_map:
             return True
         return False
 
@@ -188,8 +186,7 @@ def analyze(data):
     input_set = {}
     for line, output in zip(lines, outputs):
         reference_syntax = word_mapper.get_function_id(line)
-        reference_semantics = word_mapper.get_action_ids(line)
-        name = tuple([reference_syntax, reference_semantics, tuple(output)])
+        name = tuple([reference_syntax, tuple(output)])
         if name not in input_set:
             input_set[name] = []
         input_set[name].append(line)
