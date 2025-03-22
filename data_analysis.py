@@ -61,10 +61,10 @@ class ReplacementChecker(object):
         action_words = ['look', 'run', 'walk']
         direction_words = ['left', 'right']
         replace_words = {}
-        for i in range(len(action_words)):
-            replace_words[action_words[i]] = action_words[i - 1]
-        for i in range(len(direction_words)):
-            replace_words[direction_words[i]] = direction_words[i - 1]
+        for i, x in enumerate(action_words):
+            replace_words[x] = action_words[i - 1]
+        for i, x in enumerate(direction_words):
+            replace_words[x] = direction_words[i - 1]
         self.replace_words = replace_words
 
     def get_replaced_output(self, replace_word, position, x):
