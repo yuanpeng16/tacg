@@ -15,7 +15,3 @@
 ## Summarize results
 
     python3 summarize_results.py
-
-## Analyze SCAN data
-
-    python3 data_analysis.py
