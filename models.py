@@ -80,18 +80,6 @@ class AbstractModelGenerator(object):
         x = tf.keras.layers.GaussianNoise(self.args.alpha)(x)
         return x
 
-    def attention_decoder2(self, x):
-        attention = self.encode_factor(x)
-        attention = tf.keras.layers.Flatten()(attention)
-        attention = self.ff(3, attention, 'softmax', depth=2)
-        attention = tf.expand_dims(attention, 1)
-
-        values = self.encode_factor(x)
-        attended = tf.matmul(attention, values)
-        attended = tf.keras.layers.Flatten()(attended)
-        y = self.ff(2, attended, 'softmax', depth=2)
-        return y, y
-
     def attention_decoder(self, x):
         x = self.encode_factor(x)
         attention, h = tf.split(x, [1, 2], 1)
