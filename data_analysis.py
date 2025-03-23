@@ -171,7 +171,7 @@ class MultipleEqualChecker(object):
         return False
 
 
-class WrapperChecker(object):
+class CheckerCollection(object):
     def __init__(self, data_map):
         self.checkers = [
             WordSyntaxChecker(),
@@ -191,15 +191,15 @@ class WrapperChecker(object):
         return self.counter
 
 
-class Checker(object):
+class ItemChecker(object):
     """Show that two training samples have different syntax representations,
      given all training predictions are correct.
     """
 
     def __init__(self, data_map):
-        self.checker = WrapperChecker(data_map)
+        self.checker = CheckerCollection(data_map)
 
-    def check_pairs(self, key, value):
+    def check_item(self, key, value):
         equal_pairs = []
         for i, x in enumerate(value):
             for y in value[i + 1:]:
@@ -227,14 +227,24 @@ def analyze(data, swap_list):
             input_set[name] = []
         input_set[name].append(line)
     data_map = {tuple(line): output for line, output in zip(lines, outputs)}
-    checker = Checker(data_map)
+    checker = ItemChecker(data_map)
     for key, value in input_set.items():
         if len(value) > 1:
-            checker.check_pairs(key[:-1], value)
+            checker.check_item(key[:-1], value)
     print(swap_list)
     print(len(lines), len(input_set))
     print(checker.get_count())
     print()
+
+
+def get_swap_list(i, swap_number):
+    swap_list = [0] * swap_number
+    j = 0
+    while i > 0:
+        swap_list[swap_number - j - 1] = i % 2
+        i //= 2
+        j += 1
+    return swap_list
 
 
 def main():
@@ -242,13 +252,8 @@ def main():
     data = read_data(fn)
     swap_number = 4
     for i in range(2 ** swap_number):
-        swap_list = []
-        while i > 0:
-            swap_list.append(i % 2)
-            i //= 2
-        swap_list.reverse()
-        swap_list = [0] * (swap_number - len(swap_list)) + swap_list
-
+        swap_list = get_swap_list(i, swap_number)
+        print(swap_list)
         analyze(data, swap_list)
 
 
