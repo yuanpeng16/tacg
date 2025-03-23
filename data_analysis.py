@@ -111,9 +111,7 @@ class MultipleEqualChecker(object):
         pairs = []
         replace_inputs = []
 
-        # type 1
-        # turn left and look left
-        # turn opposite left and look
+        # type 1: equal word syntax
         for action in action_words:
             for direction in direction_words:
                 pairs.append([
@@ -125,7 +123,7 @@ class MultipleEqualChecker(object):
                     [action, 'opposite', direction]
                 ])
 
-        # type 2: semantic conflict
+        # type 2: semantic conflict: twice - after
         direction_pairs = [direction_words, direction_words[::-1]]
         for d1, d2 in direction_pairs:
             pairs.append([
@@ -136,6 +134,13 @@ class MultipleEqualChecker(object):
                 ['turn', 'opposite', d1, 'twice', 'after', 'turn', d2, 'twice'],
                 ['turn', 'opposite', d2, 'and', 'turn', 'opposite', d1, 'twice']
             ])
+        replace_inputs.extend([  # twice = after
+            ['turn', 'left', 'twice', 'and', 'turn', 'right'],
+            ['turn', 'right', 'after', 'turn', 'opposite', 'left']
+        ])
+
+        # type 3: semantic conflict: twice - and
+        for d1, d2 in direction_pairs:
             pairs.append([
                 ['turn', d1, 'twice', 'and', 'turn', d2],
                 ['turn', d2, 'after', 'turn', 'opposite', d1]
@@ -147,10 +152,6 @@ class MultipleEqualChecker(object):
         replace_inputs.extend([  # twice = and
             ['turn', 'left', 'twice', 'after', 'turn', 'right'],
             ['turn', 'right', 'and', 'turn', 'opposite', 'left']
-        ])
-        replace_inputs.extend([  # twice = after
-            ['turn', 'left', 'twice', 'and', 'turn', 'right'],
-            ['turn', 'right', 'after', 'turn', 'opposite', 'left']
         ])
 
         self.pair_map = set()
