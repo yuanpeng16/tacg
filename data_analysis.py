@@ -253,7 +253,6 @@ def main():
     swap_number = 4
     for i in range(2 ** swap_number):
         swap_list = get_swap_list(i, swap_number)
-        print(swap_list)
         analyze(data, swap_list)
 
 
