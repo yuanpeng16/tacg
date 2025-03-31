@@ -1,4 +1,4 @@
-# Theoretical Analysis for Systematic Generalization
+# A Necessary and Sufficient Condition for Compositional Generalization: A Theoretical Analysis
 
 ## Main experiments
 
