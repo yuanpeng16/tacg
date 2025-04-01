@@ -29,10 +29,8 @@ def get_result(model, name):
 
 
 def main(args):
-    models = ['baseline', 'proposed', 'no_regularization', 'no_decoder',
-              'lack_data', 'architecture']
-    names = ['Baseline', 'Proposed', 'No regularization', 'No decoder design',
-             'Lack training data', 'Architecture']
+    models = ['baseline', 'proposed', 'no_regularization', 'no_decoder', 'lack_data']
+    names = ['Baseline', 'Proposed', 'No regularization', 'No decoder design', 'Lack training data']
     if args.task == 'lack' or args.task == 'attention':
         models = models[:4]
         names = names[:4]
