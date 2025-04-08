@@ -42,11 +42,11 @@ class Dataset(object):
     def get_train_samples(self, batch_size=0):
         if batch_size <= 0 or batch_size == len(self.train_samples[0]):
             return self.train_samples
-        x, y_0 = self.train_samples
+        x, y = self.train_samples
         repeats = batch_size // len(x)
         x = np.repeat(x, repeats, 0)
-        y_0 = np.repeat(y_0, repeats, 0)
-        return [x, y_0]
+        y = np.repeat(y, repeats, 0)
+        return [x, y]
 
     def get_test_samples(self):
         return self.test_samples

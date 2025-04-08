@@ -36,7 +36,6 @@ def dump_hidden_representation(sorted_list, log_dir):
 
 def get_hidden_representations(ev, log_dir):
     tr, ts = ev.get_hidden_representations()
-    #sorted_list = [[tr[0], tr[3]], [tr[1], tr[5]], [tr[2], tr[4]], ts]
     sorted_list = [[tr[0], tr[5]], [tr[1], tr[4]], [tr[2], tr[3]], ts]
     sorted_list = np.asarray(sorted_list)
     markers = ['s', 's', '^', '^']
@@ -52,7 +51,6 @@ def get_hidden_representations(ev, log_dir):
 
 def main(args):
     set_random_seeds(args.data_random_seed, args.parameter_random_seed)
-    log_dir = os.path.join("logs", args.model, str(args.parameter_random_seed))
 
     dg = get_dataset(args.task, args.model)
     train_samples = dg.get_train_samples()
@@ -69,9 +67,6 @@ def main(args):
     train(args, dg, model, ev)
     print("final", *ev.evaluate_all())
 
-    # output hidden representations
-#    get_hidden_representations(ev, log_dir)
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -79,8 +74,8 @@ if __name__ == '__main__':
                         help='Model type.')
     parser.add_argument('--data_random_seed', type=int, default=8,
                         help='Random seed.')
-    parser.add_argument('--parameter_random_seed', type=int, default=7,
-                        help='Random seed.')
+    parser.add_argument('--parameter_random_seed', type=int,
+                        default=7, help='Random seed.')
     parser.add_argument('--steps', type=int, default=1000,
                         help='Steps.')
     parser.add_argument('--batch_size', type=int, default=1000,
