@@ -59,8 +59,8 @@ class AbstractModelGenerator(object):
         return x
 
     def get_main_model(self, x):
-        y1, y2 = self.decoder(x)
-        return [y1, y2], x
+        y = self.decoder(x)
+        return y, x
 
     # baseline ---------------------------------------
     def baseline_regularization(self, x):
@@ -70,9 +70,8 @@ class AbstractModelGenerator(object):
         x = self.encode_factor(x)
         x = tf.keras.layers.Flatten()(x)
         x = self.ff(4 * self.args.embedding_size, x, 'relu', depth=2)
-        y1 = self.get_output_layer(x, 'y1')
-        y2 = self.get_output_layer(x, 'y2')
-        return y1, y2
+        y = self.get_output_layer(x, 'y1')
+        return y
 
     # proposed ---------------------------------------
     def proposed_regularization(self, x):
@@ -87,7 +86,7 @@ class AbstractModelGenerator(object):
         attended = tf.matmul(attention, h)
         attended = tf.keras.layers.Flatten()(attended)
         y = self.ff(2, attended, 'softmax', depth=2)
-        return y, y
+        return y
 
     def xor_decoder(self, x):
         x = self.encode_factor(x)
@@ -98,7 +97,7 @@ class AbstractModelGenerator(object):
         x3 = tf.keras.layers.Flatten()(x3)
         y = tf.concat([h, x3], -1)
         y = self.ff(2, y, 'softmax', depth=2)
-        return y, y
+        return y
 
     def lack_decoder(self, x):
         h, z = tf.split(x, [2, 1], 1)
@@ -115,7 +114,7 @@ class AbstractModelGenerator(object):
 
         y = tf.reduce_mean(h * z, -1, keepdims=True)
         y = self.ff(2, y, 'softmax', depth=2)
-        return y, y
+        return y
 
     def proposed_decoder(self, x):
         if self.args.task == "attention":

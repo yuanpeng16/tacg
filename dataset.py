@@ -32,22 +32,21 @@ class Dataset(object):
         train_y = [self.get_output(x) for x in train_x]
         train_y = np.asarray(train_y)
         train_y = np.transpose(train_y, [1, 0, 2])
-        train_y = [train_y[0], train_y[1]]
+        train_y = np.asarray(train_y[0])
         test_y = [self.get_output(x) for x in test_x]
         test_y = np.asarray(test_y)
         test_y = np.transpose(test_y, [1, 0, 2])
-        test_y = [test_y[0], test_y[1]]
+        test_y = np.asarray(test_y[0])
         return [np.asarray(train_x), train_y], [np.asarray(test_x), test_y]
 
     def get_train_samples(self, batch_size=0):
         if batch_size <= 0 or batch_size == len(self.train_samples[0]):
             return self.train_samples
-        x, [y_0, y_1] = self.train_samples
+        x, y_0 = self.train_samples
         repeats = batch_size // len(x)
         x = np.repeat(x, repeats, 0)
         y_0 = np.repeat(y_0, repeats, 0)
-        y_1 = np.repeat(y_1, repeats, 0)
-        return [x, [y_0, y_1]]
+        return [x, y_0]
 
     def get_test_samples(self):
         return self.test_samples
@@ -59,7 +58,7 @@ class AttentionDataset(Dataset):
             z = x[1]
         else:
             z = x[2]
-        y = [z, z]
+        y = [z]
         y = [one_hot(yi, 2) for yi in y]
         return y
 
@@ -85,7 +84,7 @@ class StructureDataset(AttentionDataset):
             x[0] ^ x[1],
             x[1] ^ x[2]
         ]
-        y = [z[1], z[0] ^ z[1]]
+        y = [z[1]]
         y = [one_hot(yi, 2) for yi in y]
         return y
 
@@ -95,7 +94,7 @@ class XorDataset(Dataset):
         h = x[0] ^ x[1]
         y = h ^ x[2]
         y = one_hot(y, 2)
-        y = [y, y]
+        y = [y]
         return y
 
     def get_data(self):
