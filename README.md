@@ -14,3 +14,11 @@
 ## Summarize results
 
     python3 summarize_results.py
+
+## SCAN Analysis
+
+    # Download data
+    git clone https://github.com/brendenlake/SCAN.git
+    
+    # Analyze
+    python3 sentence_syntax_analysis.py
