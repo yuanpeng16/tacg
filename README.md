@@ -1,4 +1,4 @@
-# A Necessary and Sufficient Condition for Compositional Generalization: A Theoretical Analysis
+# A Theoretical Analysis of Compositional Generalization in Neural Networks: A Necessary and Sufficient Condition
 
 ## Main experiments
 
