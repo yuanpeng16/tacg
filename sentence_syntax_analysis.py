@@ -184,7 +184,7 @@ def main():
     data = read_data(fn)
     analyzer = Analyzer(data)
     if analyzer.analyze():
-        print("All pair pass the condition.")
+        print("All pairs pass the condition.")
 
 
 if __name__ == '__main__':
