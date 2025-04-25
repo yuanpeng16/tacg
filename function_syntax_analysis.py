@@ -8,7 +8,7 @@ def get_key_list():
     key_list = []
     for i, a in enumerate(keys_list):
         for b in keys_list[i + 1:]:
-            key_list.append([a, b])
+            key_list.append([[a], [b]])
     return key_list
 
 
@@ -19,8 +19,8 @@ def main():
 
     key_list = get_key_list()
     for x, y in key_list:
-        if not checker.check(x, y):
-            print(x, y, "doe not pass the condition.")
+        if checker.check(x, y):
+            print(x, y, "does not pass the condition.")
     print("All function word pairs pass the condition.")
 
 
