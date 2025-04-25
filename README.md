@@ -19,6 +19,9 @@
 
     # Download data
     git clone https://github.com/brendenlake/SCAN.git
-    
-    # Analyze
+
+    # Analyze function word syntax
+    python3 function_syntax_analysis.py
+
+    # Analyze sentence syntax
     python3 sentence_syntax_analysis.py
