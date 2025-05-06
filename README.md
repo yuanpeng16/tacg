@@ -1,5 +1,7 @@
 # A Theoretical Analysis of Compositional Generalization in Neural Networks: A Necessary and Sufficient Condition
 
+The paper: https://arxiv.org/abs/2505.02627
+
 ## Main experiments
 
     sh experiments/xor/baseline.sh
